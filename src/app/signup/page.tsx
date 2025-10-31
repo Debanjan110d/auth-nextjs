@@ -1,8 +1,6 @@
 "use client";//? Now its a client component
 import Link from "next/link";
 import React from "react";
-import { useRouter } from "next/navigation";
-import { axios } from "axios";
 
 
 export default function SignUpPage() {
@@ -13,15 +11,31 @@ export default function SignUpPage() {
     });
     const [showPassword, setShowPassword] = React.useState(false);
 
+    // simple email validation
+    const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    // compute buttonDisabled directly (derived state)
+    const usernameOk = user.username.trim().length > 0;
+    const emailOk = isValidEmail(user.email);
+    const passwordOk = user.password.length >= 6; // minimum 6 chars
+    const buttonDisabled = !(usernameOk && emailOk && passwordOk);
+
     const onSignUp = async () => {
-    //TODO    
+        // prevent accidental submits when inputs are invalid
+        if (buttonDisabled) return;
+
+        try {
+            // TODO: your existing signup logic goes here
+        } catch {
+            // handle error
+        }
     }
 
 
 
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
             <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
@@ -90,9 +104,15 @@ export default function SignUpPage() {
                         </div>
                     </div>
 
+                    {/* Button is disabled until inputs are valid. Styling changes when disabled. */}
                     <button
                         onClick={onSignUp}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6"
+                        disabled={buttonDisabled}
+                        className={
+                            buttonDisabled
+                            ? "w-full bg-gray-300 dark:bg-gray-600 text-gray-500 font-semibold py-3 rounded-lg mt-6 cursor-not-allowed"
+                            : "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6"
+                        }
                     >
                         Sign Up
                     </button>
