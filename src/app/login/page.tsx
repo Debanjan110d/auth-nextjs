@@ -13,9 +13,30 @@ export default function Loginpage() {
         }
     );
     const [showPassword, setShowPassword] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const onLogin = async () => {
-        
+        // prevent multiple submissions while loading
+        if (loading) return;
+
+        try {
+            setLoading(true); // Start loading
+            
+            // TODO: your existing login logic goes here
+            // Example:
+            // const response = await fetch('/api/users/login', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(user)
+            // });
+            // const data = await response.json();
+            
+        } catch (error) {
+            console.error("Login error:", error);
+            // handle error (show toast/alert)
+        } finally {
+            setLoading(false); // Stop loading
+        }
     }
 
 return(
@@ -75,9 +96,20 @@ return(
 
                 <button 
                     onClick={onLogin}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6"
+                    disabled={loading}
+                    className={
+                        loading
+                        ? "w-full bg-gray-300 dark:bg-gray-600 text-gray-500 font-semibold py-3 rounded-lg mt-6 cursor-not-allowed flex items-center justify-center gap-2"
+                        : "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6 flex items-center justify-center gap-2"
+                    }
                 >
-                    Login
+                    {loading && (
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    )}
+                    {loading ? "Logging in..." : "Login"}
                 </button>
 
                 <div className="text-center mt-4">

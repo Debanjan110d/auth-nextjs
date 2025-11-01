@@ -1,6 +1,10 @@
 "use client";//? Now its a client component
+
+import { set } from "mongoose";
 import Link from "next/link";
+import { Router } from "next/router";
 import React from "react";
+import toast from "react-hot-toast";
 
 
 export default function SignUpPage() {
@@ -10,6 +14,9 @@ export default function SignUpPage() {
         password :"",
     });
     const [showPassword, setShowPassword] = React.useState(false);
+
+    const [Loading,setLoading] = React.useState(false);
+
 
     // simple email validation
     const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -25,20 +32,26 @@ export default function SignUpPage() {
         if (buttonDisabled) return;
 
         try {
-            // TODO: your existing signup logic goes here
+            setLoading(true);
+            const response = await axios.post("/api/users/signup", user);
+            console.log("Signup Sucessful", response.data);
+            Router.push("");
+            
         } catch {
-            // handle error
+            console.log("Sign Up Failed");
+            
+            toast.error(error.message)//! Complete the react Toast library works here
+        }finally{
+            setLoading(false);
         }
     }
-
-
 
 
     return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
             <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6">
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{Loading ? "Processing":"Sign up"}</h1>
                     <p className="text-gray-600 dark:text-gray-400">Sign up to get started</p>
                 </div>
                 
