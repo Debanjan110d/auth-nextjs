@@ -1,21 +1,28 @@
 "use client";//? Now its a client component
 
-import { set } from "mongoose";
 import Link from "next/link";
-import { Router } from "next/router";
+import { useRouter } from "next/navigation"; //? useRouter hook from next/navigation for client components
 import React from "react";
-import toast from "react-hot-toast";
+import axios from "axios"; //? axios for making HTTP requests
+import toast from "react-hot-toast"; //? toast for showing notifications to user
 
 
 export default function SignUpPage() {
+    //? useRouter hook to navigate between pages programmatically
+    const router = useRouter();
+    
+    //? State to store user input data (username, email, password)
     const [user, setUser] = React.useState({
         username: "",
         email: "",
         password :"",
     });
+    
+    //? State to toggle password visibility (show/hide password)
     const [showPassword, setShowPassword] = React.useState(false);
 
-    const [Loading,setLoading] = React.useState(false);
+    //? State to track loading status during API call (prevents double submission)
+    const [loading, setLoading] = React.useState(false);
 
 
     // simple email validation
@@ -28,20 +35,42 @@ export default function SignUpPage() {
     const buttonDisabled = !(usernameOk && emailOk && passwordOk);
 
     const onSignUp = async () => {
-        // prevent accidental submits when inputs are invalid
-        if (buttonDisabled) return;
+        //? Prevent form submission if validation fails or if already loading
+        if (buttonDisabled || loading) return;
 
         try {
+            // Set loading to true - this disables the button and shows loading state
             setLoading(true);
+            
+            //? Show a loading toast notification to user
+            toast.loading("Creating your account...", { id: "signup" });
+            
+            // Make POST request to signup API endpoint with user data
             const response = await axios.post("/api/users/signup", user);
-            console.log("Signup Sucessful", response.data);
-            Router.push("");
             
-        } catch {
-            console.log("Sign Up Failed");
+            // Log success response to console for debugging
+            console.log("Signup Successful", response.data);
             
-            toast.error(error.message)//! Complete the react Toast library works here
-        }finally{
+            // Dismiss the loading toast and show success message
+            toast.success("Account created successfully!", { id: "signup" });
+            
+            // Navigate to login page after successful signup
+            router.push("/login");
+            
+        } catch (error: any) {
+            // Log error to console for debugging
+            console.log("Sign Up Failed", error);
+            
+            // Dismiss loading toast and show error message to user
+            // Check if error has response from server, otherwise show generic message
+            toast.error(
+                error?.response?.data?.error || "Signup failed. Please try again.", 
+                { id: "signup" }
+            );
+            
+        } finally {
+            // Always set loading back to false when done (success or error)
+            // This re-enables the button
             setLoading(false);
         }
     }
@@ -51,7 +80,10 @@ export default function SignUpPage() {
     <div className="flex flex-col justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
             <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-6">
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{Loading ? "Processing":"Sign up"}</h1>
+                    {/* Show "Processing" when loading, otherwise "Create Account" */}
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                        {loading ? "Processing..." : "Create Account"}
+                    </h1>
                     <p className="text-gray-600 dark:text-gray-400">Sign up to get started</p>
                 </div>
                 
@@ -117,17 +149,25 @@ export default function SignUpPage() {
                         </div>
                     </div>
 
-                    {/* Button is disabled until inputs are valid. Styling changes when disabled. */}
+                    {/* Button is disabled until inputs are valid OR while loading */}
                     <button
                         onClick={onSignUp}
-                        disabled={buttonDisabled}
+                        disabled={buttonDisabled || loading} //? Disable if validation fails OR during API call
                         className={
-                            buttonDisabled
-                            ? "w-full bg-gray-300 dark:bg-gray-600 text-gray-500 font-semibold py-3 rounded-lg mt-6 cursor-not-allowed"
-                            : "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6"
+                            buttonDisabled || loading //? Check both conditions for styling
+                            ? "w-full bg-gray-300 dark:bg-gray-600 text-gray-500 font-semibold py-3 rounded-lg mt-6 cursor-not-allowed flex items-center justify-center gap-2"
+                            : "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl mt-6 flex items-center justify-center gap-2"
                         }
                     >
-                        Sign Up
+                        {/* Show spinner icon when loading */}
+                        {loading && (
+                            <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        )}
+                        {/* Change button text based on loading state */}
+                        {loading ? "Creating Account..." : "Sign Up"}
                     </button>
 
                     <div className="text-center mt-4">

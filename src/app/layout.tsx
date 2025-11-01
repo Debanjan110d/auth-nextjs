@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
+import { Toaster } from "react-hot-toast"; //? Import Toaster component for toast notifications
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,35 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        {/* Toaster component renders all toast notifications */}
+        <Toaster 
+          position="top-center" 
+          reverseOrder={false}
+          toastOptions={{
+            //? Default options for all toasts
+            duration: 4000, //? Toast duration in milliseconds (4 seconds)
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+            //? Success toast styling
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#fff',
+              },
+            },
+            //? Error toast styling
+            error: {
+              duration: 4000,
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );
