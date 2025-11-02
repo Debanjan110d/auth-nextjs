@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { unique } from "next/dist/build/utils";
-import { type } from "os";
+//? Removed unnecessary imports that were causing MODULE_NOT_FOUND error
 
 
 const userSchema = new mongoose.Schema({

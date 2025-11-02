@@ -57,6 +57,7 @@ export default function SignUpPage() {
             // Navigate to login page after successful signup
             router.push("/login");
             
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             // Log error to console for debugging
             console.log("Sign Up Failed", error);

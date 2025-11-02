@@ -9,7 +9,9 @@ npm install react-hot-toast axios
 ## 🔧 Setup (Already Done!)
 
 ### 1. Layout Setup (`src/app/layout.tsx`)
+
 The `<Toaster />` component is added to your root layout. This component:
+
 - Renders all toast notifications globally
 - Must be placed once in the root layout
 - Configured with custom styling and duration
@@ -32,30 +34,37 @@ The `<Toaster />` component is added to your root layout. This component:
 ### Toast Types:
 
 1. **Loading Toast** 
+
    ```tsx
    toast.loading("Creating your account...", { id: "signup" });
    ```
+
    - Shows a spinner icon
    - Stays until you dismiss it
    - Use `id` to update/dismiss this specific toast later
 
 2. **Success Toast**
+
    ```tsx
    toast.success("Account created!", { id: "signup" });
    ```
+
    - Shows checkmark icon
    - Automatically dismisses after 3 seconds
    - Using same `id` replaces the loading toast
 
 3. **Error Toast**
+
    ```tsx
    toast.error("Something went wrong!", { id: "signup" });
    ```
+
    - Shows error icon
    - Automatically dismisses after 4 seconds
    - Using same `id` replaces the loading toast
 
 ### 💡 Why Use `id`?
+
 - Same `id` = toast gets **replaced** instead of creating multiple toasts
 - Prevents toast spam
 - Smooth transition from loading → success/error
@@ -65,9 +74,11 @@ The `<Toaster />` component is added to your root layout. This component:
 ## ⚡ How Loading State Works
 
 ### State Declaration:
+
 ```tsx
 const [loading, setLoading] = React.useState(false);
 ```
+
 - `loading`: current state (true/false)
 - `setLoading`: function to update state
 

@@ -1,11 +1,11 @@
-import {connect} from "@/dbconfig/dbconfig";
+import {connectToDB} from "@/dbconfig/dbconfig";
 import User from "@/models/usermodel";
 import { NextRequest,NextResponse } from "next/server";
-import bcryptjs from "bcrypt"; 
-import { log } from "console";
+import bcryptjs from "bcryptjs"; 
 
 
-connect();
+
+connectToDB();
 
 
 export async function POST(request: NextRequest){
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest){
         return NextResponse.json({message: "User created successfully",sucess: true,newUser},{status: 201})
         
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json({error: error.message},{status: 500})
     }

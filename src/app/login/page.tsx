@@ -1,11 +1,13 @@
 "use client";//? Now its a client side component
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { axios } from "axios";
+import  axios  from "axios";
+import toast from "react-hot-toast";
 
 
 export default function Loginpage() {
+    const router = useRouter();
     const [user,setuser]= React.useState(
         {
             usernameOrEmail:"",
@@ -13,7 +15,18 @@ export default function Loginpage() {
         }
     );
     const [showPassword, setShowPassword] = React.useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [buttonDisabled, setButtonDisabled] = React.useState(true);
     const [loading, setLoading] = React.useState(false);
+
+    useEffect(() => {
+        if (user.usernameOrEmail.length > 0 && user.password.length > 0) {
+            setButtonDisabled(false);
+        } else {
+            setButtonDisabled(true);
+        }
+        
+    },[user]);
 
     const onLogin = async () => {
         // prevent multiple submissions while loading
@@ -22,18 +35,31 @@ export default function Loginpage() {
         try {
             setLoading(true); // Start loading
             
-            // TODO: your existing login logic goes here
-            // Example:
-            // const response = await fetch('/api/users/login', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(user)
-            // });
-            // const data = await response.json();
+            //? Show loading toast
+            toast.loading("Logging in...", { id: "login" });
             
-        } catch (error) {
+            //? Make POST request to login API endpoint
+            const response = await axios.post("/api/users/login", user);
+            console.log("Login response:", response.data);
+            
+            //? Show success toast (replaces loading toast)
+            toast.success("Login successful!", { id: "login" });
+            
+            //? Navigate to profile page with user ID from response
+            router.push(`/profile/${response.data.user._id}`);
+
+            
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.log("Login error:", error);
+            
+            //? Show error toast with message from server or fallback
+            toast.error(
+                error?.response?.data?.error || "Login failed. Please try again.",
+                { id: "login" }
+            );
             console.error("Login error:", error);
-            // handle error (show toast/alert)
+            
         } finally {
             setLoading(false); // Stop loading
         }
@@ -114,7 +140,7 @@ return(
 
                 <div className="text-center mt-4">
                     <p className="text-gray-600 dark:text-gray-400">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link href="/signup" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold">
                             Sign up here
                         </Link>
