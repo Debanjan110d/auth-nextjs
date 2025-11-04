@@ -4,9 +4,16 @@ import type { NextRequest } from "next/server";
 
 //? This function can be marked " async" if using `await` inside
 export function middleware(request: NextRequest) {
-    if (request.nextUrl.pathname === "/") {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+    const path = request.nextUrl.pathname; //? /, /profile, /login, /signup
+
+    const isPublicPath = path === "/login" || path === "/signup"; //? /login, /signup
+
+    const token = request.cookies.get("token")?.value || "";
+
+    if (isPublicPath && token) {
+        return NextResponse.redirect(new URL("/", request.nextUrl));// It should be always "nextUrl"
     }
+
 }
 
 //? See "Matching paths" below to learn more
