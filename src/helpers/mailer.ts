@@ -23,12 +23,13 @@ try {
 
     const transporter = nodemailer.createTransport({
         host: process.env.MAIL_HOST,
-        port: process.env.MAIL_PORT,
+        port: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : undefined,
+        secure: process.env.MAIL_SECURE === "true",
         auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS
         }
-    });
+    } as nodemailer.TransportOptions);
     
     const mailOptions = {
         from : process.env.MAIL_FROM,
