@@ -21,9 +21,10 @@ export default function VerifyEmailPage() {
             setverified(true);
             setError(false);
             
+            //! FIXED: Use router.replace instead of router.push for proper redirect
             //! IMPROVED: Auto redirect to login after 3 seconds
             setTimeout(() => {
-                router.push("/login");
+                router.replace("/login");
             }, 3000);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,13 +39,15 @@ export default function VerifyEmailPage() {
 
     //! IMPROVED: Extract token from URL on component mount
     useEffect(() => {
-        const urlToken = window.location.search.split("=")[1];
+        //! FIXED: Properly decode the URL token
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get("token");
         setToken(urlToken || "");
         
         //! ADDED: Redirect to login if no token in URL (prevents direct access)
         if (!urlToken) {
             setTimeout(() => {
-                router.push("/login");
+                router.replace("/login");
             }, 2000);
         }
     }, [router]);
