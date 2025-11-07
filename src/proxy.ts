@@ -6,7 +6,13 @@ import type { NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname; //? Current path: /, /profile/:id, /login, /signup
 
-    //? Define public paths that don't require authentication
+    //! FIXED: /verifyemail should be accessible by anyone (logged in or not)
+    //? Allow verification page to bypass all authentication checks
+    if (path === "/verifyemail") {
+        return NextResponse.next();
+    }
+
+    //? Define public paths that don't require authentication (but logged-in users can't access)
     const isPublicPath = path === "/login" || path === "/signup";
 
     //? Get the authentication token from cookies
@@ -36,6 +42,7 @@ export const config = {
         "/",
         "/profile/:path*", //? This matches /profile/[id] and any nested routes
         "/login",
-        "/signup"
+        "/signup",
+        "/verifyemail" //! ADDED: Include verifyemail in matcher so proxy can allow it
     ],
 };

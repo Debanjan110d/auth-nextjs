@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { NextResponse } from "next/server";
 import User from "@/models/usermodel";
 import bcryptjs from "bcryptjs";
@@ -42,7 +43,7 @@ try {
                 Click the button below to ${emailType === "VERIFY" ? "verify your email address" : "reset your password"}:
             </p>
             <a href="${process.env.DOMAIN}/verifyemail?token=${hashedUserId}" 
-               style="display: inline-block; padding: 12px 24px; margin: 20px 0; background-color: #0070f3; color: white; text-decoration: none; border-radius: 5px;">
+            style="display: inline-block; padding: 12px 24px; margin: 20px 0; background-color: #0070f3; color: white; text-decoration: none; border-radius: 5px;">
                 ${emailType === "VERIFY" ? "Verify Email" : "Reset Password"}
             </a>
             <p style="color: #666; font-size: 14px;">

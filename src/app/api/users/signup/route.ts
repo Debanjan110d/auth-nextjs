@@ -2,7 +2,6 @@ import {connectToDB} from "@/dbconfig/dbconfig";
 import User from "@/models/usermodel";
 import { NextRequest,NextResponse } from "next/server";
 import bcryptjs from "bcryptjs"; 
-import { send } from "process";
 import { sendEmail } from "@/helpers/mailer";
 
 

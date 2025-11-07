@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema({
     },
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,
-    VerifyToken: String,
-    VerifyTokenExpiry: Date
+    verifyToken: String, //! FIXED: Changed VerifyToken to verifyToken (camelCase consistency)
+    verifyTokenExpiry: Date //! FIXED: Changed VerifyTokenExpiry to verifyTokenExpiry (camelCase consistency)
 
 
 })
