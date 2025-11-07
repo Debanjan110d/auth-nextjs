@@ -2,6 +2,8 @@ import {connectToDB} from "@/dbconfig/dbconfig";
 import User from "@/models/usermodel";
 import { NextRequest,NextResponse } from "next/server";
 import bcryptjs from "bcryptjs"; 
+import { send } from "process";
+import { sendEmail } from "@/helpers/mailer";
 
 
 
@@ -32,7 +34,12 @@ export async function POST(request: NextRequest){
         await newUser.save();
         console.log(newUser);
         
+        //? send verification email
+        await sendEmail({email,emailType:"VERIFY",userId:newUser._id});
+
+
         return NextResponse.json({message: "User created successfully",sucess: true,newUser},{status: 201})
+    
         
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
